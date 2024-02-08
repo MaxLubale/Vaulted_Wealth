@@ -110,6 +110,39 @@ def register_user():
 
     return jsonify({'message': 'User registered successfully'}), 201
 
+
+@app.route('/admin/signup', methods=['POST'])
+def admin_signup():
+    data = request.get_json()
+
+    first_name = data.get('first_name')
+    last_name = data.get('last_name')
+    username = data.get('username')
+    password = data.get('password')
+    email = data.get('email')
+    
+
+    if not username or not password or not email or not first_name or not last_name:
+        return jsonify({'message': 'All fields (username, password, email, first_name, last_name) are required'}), 400
+
+    # Check if the username and email are already taken
+    existing_admin_username = Admin.query.filter_by(username=username).first()
+    existing_admin_email = Admin.query.filter_by(email=email).first()
+
+    if existing_admin_username:
+        return jsonify({'message': 'Username is already taken'}), 400
+
+    if existing_admin_email:
+        return jsonify({'message': 'Email is already registered'}), 400
+
+    # Create a new admin
+    new_admin = Admin(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
+    db.session.add(new_admin)
+    db.session.commit()
+
+    return jsonify({'message': 'Admin registered successfully'}), 201
+
+
 # Route to login a user
 @app.route('/login', methods=['POST'])
 def login_user():
@@ -125,15 +158,18 @@ def login_user():
         return jsonify({'message': 'Invalid credentials'}), 401
     
 # Route to login an admin
+
 @app.route('/admin/login', methods=['POST'])
-def login_admin():
-    data = request.json
-    username = data['username']
-    password = data['password']
+def admin_login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
 
-    admin = Admin.query.filter_by(username=username).first()
+    # Replace this with your actual authentication logic
+    admin = Admin.query.filter_by(username=username, password=password).first()
 
-    if admin and check_password_hash(admin.password, password):
+    if admin:
+        login_user(admin)
         return jsonify({'message': 'Admin login successful'}), 200
     else:
         return jsonify({'message': 'Invalid admin credentials'}), 401
