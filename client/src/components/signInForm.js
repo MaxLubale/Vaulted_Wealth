@@ -18,7 +18,7 @@ const SignUpForm = ({ userType }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`http://localhost:5000/${userType.toLowerCase()}/register`, {
+      const response = await fetch(`${userType.toLowerCase()}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

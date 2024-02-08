@@ -20,7 +20,7 @@ const TransactionForm = () => {
 
     try {
       // Send transaction data to the Flask backend
-      const response = await fetch('http://localhost:5000/transactions', {
+      const response = await fetch('/transactions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -35,11 +35,11 @@ const TransactionForm = () => {
       const data = await response.json();
       console.log('Transaction added successfully:', data);
 
-      // Add any other logic you need after a successful transaction
+     
 
     } catch (error) {
       console.error('Error adding transaction:', error);
-      // Add error handling logic here
+     
     }
   };
 

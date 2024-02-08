@@ -14,6 +14,7 @@ class User(db.Model):
 
     # Relationship with Account
     account = db.relationship('Account', backref='user', uselist=False)
+     
 
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -40,6 +41,7 @@ class Admin(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     joined_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    # Relationship with User
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+   
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     user = db.relationship('User', backref='admin', uselist=False)
+   

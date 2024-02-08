@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3b364cdce341d397b8fb49e9855341cccde854239202148b1edf5f44f62b1467"
+            "sha256": "3f761e3f0a72a8e8b6b24aa5bf513989227b0470bfd762bac61fe317b688b340"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -259,6 +259,13 @@
             "markers": "python_version >= '3.7'",
             "version": "==2.0.25"
         },
+        "sqlalchemy-serializer": {
+            "hashes": [
+                "sha256:c4cf3e3eebbffa5b46a77ddb886230e5d8c17fd0b9ddbd57eed1a837eb1463cc"
+            ],
+            "index": "pypi",
+            "version": "==1.4.1"
+        },
         "typing-extensions": {
             "hashes": [
                 "sha256:23478f88c37f27d76ac8aee6c905017a143b0b1b886c3c9f66bc2fd94f9f5783",
@@ -272,6 +279,7 @@
                 "sha256:507e811ecea72b18a404947aded4b3390e1db8f826b494d76550ef45bb3b1dcc",
                 "sha256:90a285dc0e42ad56b34e696398b8122ee4c681833fb35b8334a095d82c56da10"
             ],
+            "index": "pypi",
             "markers": "python_version >= '3.8'",
             "version": "==3.0.1"
         },

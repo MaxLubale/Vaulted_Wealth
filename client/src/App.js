@@ -1,24 +1,31 @@
-// App.js
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route} from 'react-router-dom';
+import SignUpForm from './components/signUpForm';
 
-import React, {useState } from 'react';
-import SignUpForm from './components/signUpForm';  
-import SignInForm from './components/signInForm';  
-// import './App.css';
+const App = () => {
+    const [selectedRole, setSelectedRole] = useState(null);
 
-function App() {
-  const [userType, setUserType] = useState('User');
+    return (
+        <Router>
+            <div>
+                <h1>Welcome to Your App</h1>
+                <div>
+                    <h2>Select Role:</h2>
+                    <button onClick={() => setSelectedRole('user')}>User</button>
+                    <button onClick={() => setSelectedRole('admin')}>Admin</button>
+                </div>
 
-  return (
-    <div>
-      <h1>Bank App</h1>
-      <div>
-        <button onClick={() => setUserType('User')}>Sign Up/In as User</button>
-        <button onClick={() => setUserType('Admin')}>Sign Up/In as Admin</button>
-      </div>
-      {userType === 'User' ? <SignUpForm userType="User" /> : <SignUpForm userType="Admin" />}
-      {userType === 'User' ? <SignInForm userType="User" /> : <SignInForm userType="Admin" />}
-    </div>
-  );
-}
+                {selectedRole && (
+                    <Route>
+                        <Route path="/signup">
+                            <SignUpForm role={selectedRole} />
+                        </Route>
+                        {/* Add other routes as needed */}
+                    </Route>
+                )}
+            </div>
+        </Router>
+    );
+};
 
 export default App;
