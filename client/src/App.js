@@ -50,6 +50,7 @@ function App() {
         )}
 
         <Routes>
+          {/* <Route path='/'element={}></Route> */}
           <Route path="/signup" element={<SignUpForm role={selectedRole} />} />
           <Route path="/login" element={<LoginForm role={selectedRole} />} />
           <Route path="/dashboard" element={<UserDashboard />} />

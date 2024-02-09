@@ -13,14 +13,14 @@ migrate = Migrate(app, db)
 @app.route('/users', methods=['GET'])
 def get_all_users():
     users = User.query.all()
-    user_list = [{'id': user.id, 'username': user.username} for user in users]
+    user_list = [{'id': user.id, 'username': user.username, 'first_name': user.first_name ,'last_name': user.last_name ,'email':user.email} for user in users]
     return jsonify({'users': user_list})
 
 # Route to get all admins
 @app.route('/admins', methods=['GET'])
 def get_all_admins():
     admins = Admin.query.all()
-    admin_list = [{'id': admin.id, 'username': admin.username} for admin in admins]
+    admin_list = [{'id': admin.id, 'username': admin.username, 'first_name': admin.first_name ,'last_name': admin.last_name ,'email':admin.email} for admin in admins]
     return jsonify({'admins': admin_list})
 
 # Route to get user by ID
@@ -112,33 +112,22 @@ def register_user():
 
 
 @app.route('/admin/signup', methods=['POST'])
-def admin_signup():
-    data = request.get_json()
+def register_admin():
+    data = request.json
+    username = data['username']
+    password = data['password']
+    first_name = data['first_name']
+    last_name = data['last_name']
+    email = data['email']
 
-    first_name = data.get('first_name')
-    last_name = data.get('last_name')
-    username = data.get('username')
-    password = data.get('password')
-    email = data.get('email')
-    
+    if Admin.query.filter_by(username=username).first():
+        return jsonify({'message': 'Username already exists'}), 400
 
-    if not username or not password or not email or not first_name or not last_name:
-        return jsonify({'message': 'All fields (username, password, email, first_name, last_name) are required'}), 400
-
-    # Check if the username and email are already taken
-    existing_admin_username = Admin.query.filter_by(username=username).first()
-    existing_admin_email = Admin.query.filter_by(email=email).first()
-
-    if existing_admin_username:
-        return jsonify({'message': 'Username is already taken'}), 400
-
-    if existing_admin_email:
-        return jsonify({'message': 'Email is already registered'}), 400
-
-    # Create a new admin
-    new_admin = Admin(username=username, password=password, email=email, first_name=first_name, last_name=last_name)
+    new_admin = Admin(username=username, password=generate_password_hash(password), first_name=first_name, last_name=last_name, email=email)
     db.session.add(new_admin)
     db.session.commit()
+
+    # Additional logic for creating admin-related entities if needed
 
     return jsonify({'message': 'Admin registered successfully'}), 201
 
@@ -160,19 +149,18 @@ def login_user():
 # Route to login an admin
 
 @app.route('/admin/login', methods=['POST'])
-def admin_login():
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
+def login_admin():
+    data = request.json
+    username = data['username']
+    password = data['password']
 
-    # Replace this with your actual authentication logic
-    admin = Admin.query.filter_by(username=username, password=password).first()
+    admin = Admin.query.filter_by(username=username).first()
 
-    if admin:
-        login_user(admin)
+    if admin and check_password_hash(admin.password, password): 
         return jsonify({'message': 'Admin login successful'}), 200
     else:
-        return jsonify({'message': 'Invalid admin credentials'}), 401
+        return jsonify({'message': 'Invalid credentials'}), 401 
+
 
 if __name__ == '__main__':
     with app.app_context():
