@@ -53,7 +53,7 @@ const UserAccountsPage = ({ userId }) => {
           <h2>Accounts List</h2>
           {accounts.map((account) => (
             <div key={account.id}>
-              <p>Account ID: {account.id}</p>
+              <p>Account Name: {account.account_name}</p>
               <p>Balance: {account.balance}</p>
               <p>Created Date: {account.created_date}</p>
               {/* Fetch and display transactions for this account if needed */}

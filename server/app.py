@@ -3,6 +3,9 @@ from models import db, User, Account, Transaction, Admin
 from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import current_user, login_required
+from werkzeug.exceptions import BadRequest, InternalServerError
+
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bank.db'
@@ -91,27 +94,42 @@ def delete_transaction(transaction_id):
 # Route to register a new user
 @app.route('/register', methods=['POST'])
 def register_user():
-    data = request.json
-    username = data['username']
-    password = data['password']
-    first_name = data['first_name']
-    last_name = data['last_name']
-    email = data['email']
+    try:
+        data = request.json
 
-    if User.query.filter_by(username=username).first():
-        return jsonify({'message': 'Username already exists'}), 400
+        # Check if all required fields are present
+        required_fields = ['username', 'password', 'first_name', 'last_name', 'email']
+        missing_fields = [field for field in required_fields if field not in data]
 
-    new_user = User(username=username, password=generate_password_hash(password), first_name=first_name, last_name=last_name, email=email)
-    db.session.add(new_user)
-    db.session.commit()
+        if missing_fields:
+            raise BadRequest(description=f'Missing required fields: {", ".join(missing_fields)}')
 
-    new_account = Account(user_id=new_user.id)
-    db.session.add(new_account)
-    db.session.commit()
+        username = data['username']
+        password = data['password']
+        first_name = data['first_name']
+        last_name = data['last_name']
+        email = data['email']
 
-    return jsonify({'message': 'User registered successfully'}), 201
+        if User.query.filter_by(username=username).first():
+            return jsonify({'message': 'Username already exists'}), 400
 
+        new_user = User(username=username, password=generate_password_hash(password), first_name=first_name, last_name=last_name, email=email)
+        db.session.add(new_user)
+        db.session.commit()
 
+        # Create a new account with the default name 'personal'
+        new_account = Account(user_id=new_user.id)
+        db.session.add(new_account)
+        db.session.commit()
+
+        return jsonify({'message': 'User registered successfully'}), 201
+    except BadRequest as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        print(f"Error during registration: {str(e)}")
+        return jsonify({'error': 'Internal Server Error', 'details': str(e)}), 500
+
+# admin signup
 @app.route('/admin/signup', methods=['POST'])
 def register_admin():
     data = request.json
@@ -128,7 +146,7 @@ def register_admin():
     db.session.add(new_admin)
     db.session.commit()
 
-    # Additional logic for creating admin-related entities if needed
+   
 
     return jsonify({'message': 'Admin registered successfully'}), 201
 
@@ -170,6 +188,51 @@ def login_admin():
         return jsonify({'message': 'Admin login successful'}), 200
     else:
         return jsonify({'message': 'Invalid credentials'}), 401 
+
+
+@app.route('/user/<int:user_id>/accounts', methods=['GET'])
+def get_user_accounts(user_id):
+    user = User.query.get_or_404(user_id)
+
+    accounts_data = []
+    for account in user.accounts:
+        account_data = {
+            'id': account.id,
+            'created_date': account.created_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'balance': account.balance,
+            'name': account.account_name,  # Update this line to use 'account_name'
+            'transactions': [
+                {
+                    'id': transaction.id,
+                    'amount': transaction.amount,
+                    'transaction_date': transaction.transaction_date.strftime('%Y-%m-%d %H:%M:%S')
+                }
+                for transaction in account.transactions
+            ]
+        }
+        accounts_data.append(account_data)
+
+    return jsonify({'accounts': accounts_data}), 200
+    
+
+# create new account 
+@app.route('/user/<int:user_id>/accounts', methods=['POST'])
+def create_account(user_id):
+    user = User.query.get_or_404(user_id)
+
+    data = request.json
+    account_name = data.get('accountName', '')  
+
+    
+    if account_name not in ['personal', 'business', 'other']:
+        return jsonify({'error': 'Invalid account name'}), 400
+
+    new_account = Account(user=user, name=account_name)  
+    db.session.add(new_account)
+    db.session.commit()
+
+    return jsonify({'message': 'Account created successfully'}), 201
+
 
 
 

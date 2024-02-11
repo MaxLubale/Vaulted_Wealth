@@ -12,12 +12,14 @@ class User(db.Model):
     email = db.Column(db.String(100), unique=True, nullable=False)
     joined_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    # Relationship with Account
-    account = db.relationship('Account', backref='user', uselist=False)
+     # Relationship with Account
+    accounts = db.relationship('Account', backref='user', lazy=True)
+
      
 
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    account_name = db.Column(db.String(50), default='personal')
     created_date = db.Column(db.DateTime, default=datetime.utcnow)
     balance = db.Column(db.Float, default=100)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -42,6 +44,7 @@ class Admin(db.Model):
     joined_at = db.Column(db.DateTime, default=datetime.utcnow)
 
    
+    # Relationship with User
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
     user = db.relationship('User', backref='admin', uselist=False)
    

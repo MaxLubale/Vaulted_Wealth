@@ -1,3 +1,5 @@
+// UserDashboard.js
+
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import UserAccountsPage from './UserAccountsPage';
@@ -58,8 +60,7 @@ const UserDashboard = () => {
           <p>Username: {userData.username}</p>
           <p>Email: {userData.email}</p>
 
-          {/* Link to the User Accounts Page */}
-          <Link to={`/dashboard/${userId}/accounts`}>View Accounts</Link>
+
 
           {/* Route for the User Accounts Page */}
           <UserAccountsPage userId={userId} />

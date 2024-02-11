@@ -12,6 +12,10 @@ const SignUpForm = () => {
         password: ''
     });
 
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -21,6 +25,7 @@ const SignUpForm = () => {
         e.preventDefault();
 
         try {
+            setLoading(true);
             const response = await fetch('/register', {
                 method: 'POST',
                 headers: {
@@ -30,20 +35,26 @@ const SignUpForm = () => {
             });
 
             if (response.ok) {
-                console.log('User registered successfully!');
+                setSuccessMessage('User registered successfully!');
                 // Redirect to login page after successful signup
                 navigate('/login');
             } else {
-                console.error('Failed to register user.');
+                const data = await response.json();
+                setError(data.message || 'Failed to register user.');
             }
         } catch (error) {
             console.error('Error during registration:', error);
+            setError('Internal Server Error. Please try again later.');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div>
             <h2>Sign Up</h2>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+            {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>First Name:</label>
@@ -65,7 +76,9 @@ const SignUpForm = () => {
                     <label>Password:</label>
                     <input type="password" name="password" value={formData.password} onChange={handleChange} required />
                 </div>
-                <button type="submit">Sign Up</button>
+                <button type="submit" disabled={loading}>
+                    {loading ? 'Signing Up...' : 'Sign Up'}
+                </button>
             </form>
         </div>
     );
