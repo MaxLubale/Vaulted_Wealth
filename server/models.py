@@ -19,7 +19,7 @@ class User(db.Model):
 class Account(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_date = db.Column(db.DateTime, default=datetime.utcnow)
-    balance = db.Column(db.Float, default=0)
+    balance = db.Column(db.Float, default=100)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     # Relationship with Transaction

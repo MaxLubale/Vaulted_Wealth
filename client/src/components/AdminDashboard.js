@@ -47,13 +47,14 @@ const AdminDashboard = () => {
 
   return (
     <div>
-      <h2>Admin Dashboard</h2>
-
+      <h1>Admin Dashboard</h1>
+      <h2>Clients:</h2>
       {/* Display user data */}
       {Array.isArray(usersData) && usersData.length > 0 ? (
         usersData.map((user) => (
           <div key={user.id}>
-            <h3>User ID: {user.username}</h3>
+           
+            <h3>Username: {user.username}</h3>
             <p>
               Name: {`${user.first_name || 'N/A'} ${user.last_name || 'N/A'}`}
             </p>

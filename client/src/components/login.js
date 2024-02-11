@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Login = () => {
+const LoginForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
@@ -9,9 +9,43 @@ const Login = () => {
   });
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [userData, setUserData] = useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleLoginSuccess = async (userId) => {
+    try {
+      const userResponse = await fetch(`/user/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (userResponse.ok) {
+        const userData = await userResponse.json();
+        console.log('User data:', userData);
+
+        // Update the user data state and navigate to the user dashboard
+        setUserData(userData.user);
+        navigate(`/dashboard/${userId}`);
+      } else {
+        console.error('Error fetching user data:', userResponse.statusText);
+
+        if (userResponse.status === 500) {
+          setErrorMessage('Internal Server Error. Please try again later.');
+        } else {
+          setErrorMessage('Error fetching user data.');
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      setErrorMessage('Something went wrong. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -32,10 +66,17 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        console.log(data.message);
-        // Redirect to the user dashboard
-        navigate('/dashboard');
+        console.log('Login successful:', data);
+
+        if (!data.user || !data.user.id) {
+          setErrorMessage('User ID not found in the response.');
+          return;
+        }
+
+        // Fetch user data after successful login
+        handleLoginSuccess(data.user.id);
       } else {
+        console.error('Login failed:', data.message);
         setErrorMessage(data.message || 'Login failed.');
       }
     } catch (error) {
@@ -50,6 +91,7 @@ const Login = () => {
     <div>
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
+        {/* Add your existing form fields here */}
         <label>
           Username:
           <input
@@ -79,4 +121,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginForm;

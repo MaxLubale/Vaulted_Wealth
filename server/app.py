@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from models import db, User, Account, Transaction, Admin
 from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import current_user, login_required
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bank.db'
@@ -35,7 +36,7 @@ def get_user_by_id(user_id):
             'username': user.username,
             'email': user.email
         }
-        return jsonify(user_data), 200
+        return jsonify({'user': user_data}), 200
     else:
         return jsonify({'message': 'User not found'}), 404
 
@@ -142,9 +143,18 @@ def login_user():
     user = User.query.filter_by(username=username).first()
 
     if user and check_password_hash(user.password, password):
-        return jsonify({'message': 'Login successful'}), 200
+        
+        user_data = {
+            'id': user.id,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'username': user.username,
+            'email': user.email
+        }
+        return jsonify({'user': user_data, 'message': 'Login successful'}), 200
     else:
         return jsonify({'message': 'Invalid credentials'}), 401
+
     
 # Route to login an admin
 
@@ -162,7 +172,9 @@ def login_admin():
         return jsonify({'message': 'Invalid credentials'}), 401 
 
 
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(debug=True, port=5000)
