@@ -234,7 +234,24 @@ def create_account(user_id):
     return jsonify({'message': 'Account created successfully'}), 201
 
 
+@app.route('/user/<int:user_id>/accounts/<int:account_id>', methods=['PUT'])
+def edit_account_name(user_id, account_id):
+    try:
+        # Get the user and account
+        user = User.query.get_or_404(user_id)
+        account = Account.query.get_or_404(account_id)
 
+        # Extract the new account name from the request JSON
+        new_account_name = request.json.get('new_account_name')
+
+        # Update the account name
+        account.account_name = new_account_name
+        db.session.commit()
+
+        return jsonify({'message': 'Account name updated successfully'}), 200
+    except Exception as e:
+        print(f"Error during account name update: {str(e)}")
+        return jsonify({'error': 'Internal Server Error', 'details': str(e)}), 500
 
 
 if __name__ == '__main__':
