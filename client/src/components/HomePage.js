@@ -2,24 +2,39 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './HomePage.css'; // Import the common CSS file
+import './HomePage.css'; 
 
 
 const HomePage = () => {
   const [selectedRole, setSelectedRole] = useState(null);
 
   return (
+    <>
+    
     <div className="container">
+      
+
       <h1>Welcome to Vaulted Wealth</h1>
-      <div>
+
+      
+
         <h2>Select Role:</h2>
         
-        <p><button onClick={() => setSelectedRole('user')}>User</button></p>
-      </div>
-    
-      <div>
-        <button onClick={() => setSelectedRole('admin')}>Admin</button>
-      </div>
+        <button
+            style={{ marginRight: '10px' }}
+            onClick={() => setSelectedRole('user')}
+          >
+            <h2>User</h2>
+          </button>
+
+          <button
+            style={{ marginLeft: '10px' }}
+            onClick={() => setSelectedRole('admin')}
+          >
+            <h2>Admin</h2>
+          </button>
+
+      
 
       {selectedRole && (
         <div className="button-container">
@@ -37,6 +52,8 @@ const HomePage = () => {
             </>
           )}
 
+          
+
           {selectedRole === 'admin' && (
             <>
               <Link to="/admin/signup">
@@ -45,11 +62,18 @@ const HomePage = () => {
               <Link to="/admin/login">
                 <button className="right-button">Admin Login</button>
               </Link>
+              
             </>
+            
           )}
         </div>
+        
       )}
+
+ 
     </div>
+    
+    </>
   );
 };
 

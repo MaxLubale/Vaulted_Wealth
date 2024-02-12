@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './AdminSignUpForm.css'
 
 const AdminSignupPage = () => {
   const navigate = useNavigate(); // Use useNavigate hook
@@ -46,7 +47,7 @@ const AdminSignupPage = () => {
   };
 
   return (
-    <div>
+    <div className="form-container">
       <h2>Signup as Admin</h2>
       <form onSubmit={handleSubmit}>
         <div>
