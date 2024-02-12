@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './LoginForm.css'; 
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -48,6 +49,7 @@ const LoginForm = () => {
     }
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -88,33 +90,37 @@ const LoginForm = () => {
   };
 
   return (
-    <div>
+    <div className="login-form-container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         {/* Add your existing form fields here */}
-        <label>
-          Username:
-          <input
-            type="text"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-          />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-        </label>
-        <br />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
+        <div className="centered-input">
+          <label>
+            Username:
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+        <div className="centered-input">
+          <label>
+            Password:
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+        <div className="centered-input">
+          <button type="submit" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </button>
+        </div>
         {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
       </form>
     </div>

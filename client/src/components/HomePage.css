@@ -1,0 +1,36 @@
+/* common.css */
+
+
+  
+  h1, h2, h3, h4, h5, h6 {
+    text-align: center;
+  }
+  
+    
+  button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px; /* Add some margin to separate from the previous content */
+  }
+  
+  .left-button {
+    order: 1; /* Make left button appear first */
+  }
+  
+  .right-button {
+    order: 2; /* Make right button appear second */
+  }
+  

@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 const CreateAccount = () => {
   const { userId } = useParams();
   const [formData, setFormData] = useState({
-    accountName: '',  // Updated to include accountName
+    accountName: '', 
   });
 
   const handleChange = (e) => {
@@ -14,7 +14,27 @@ const CreateAccount = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add your logic to send the form data to the backend
+
+    try {
+      // Send a POST request to create a new account
+      const response = await fetch(`/user/${userId}/accounts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
+
+      // Optional: Handle success or navigate to another page
+      console.log('Account created successfully!');
+    } catch (error) {
+      console.error('Error creating account:', error);
+      // Optional: Handle error or display a message to the user
+    }
   };
 
   return (

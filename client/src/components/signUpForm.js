@@ -21,10 +21,21 @@ const SignUpForm = () => {
         setFormData({ ...formData, [name]: value });
     };
 
+    const isEmailValid = (email) => {
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
+            if (!isEmailValid(formData.email)) {
+                setError('Please enter a valid email address.');
+                return;
+            }
+
             setLoading(true);
             const response = await fetch('/register', {
                 method: 'POST',
@@ -36,7 +47,7 @@ const SignUpForm = () => {
 
             if (response.ok) {
                 setSuccessMessage('User registered successfully!');
-                // Redirect to login page after successful signup
+                
                 navigate('/login');
             } else {
                 const data = await response.json();
@@ -66,7 +77,13 @@ const SignUpForm = () => {
                 </div>
                 <div>
                     <label>Email:</label>
-                    <input type="email" name="email" value={formData.email} onChange={handleChange} required />
+                    <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                    />
                 </div>
                 <div>
                     <label>Username:</label>
@@ -74,7 +91,13 @@ const SignUpForm = () => {
                 </div>
                 <div>
                     <label>Password:</label>
-                    <input type="password" name="password" value={formData.password} onChange={handleChange} required />
+                    <input
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                    />
                 </div>
                 <button type="submit" disabled={loading}>
                     {loading ? 'Signing Up...' : 'Sign Up'}

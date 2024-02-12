@@ -1,0 +1,26 @@
+
+
+/* Add your styles here */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  background-color: #3498db;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+.user-info {
+  margin-top: 20px;
+}
+
+.user-info p {
+  margin-bottom: 10px;
+}
+
+
+
+
