@@ -61,10 +61,10 @@ const AdminDashboard = () => {
 
             {user.accounts && user.accounts.length > 0 && (
               <div>
-                <h4>User Accounts</h4>
+                <h3>User Accounts</h3>
                 {user.accounts.map((account) => (
                   <div key={account.id}>
-                    <h2>Account ID: {account.account_name}</h2>
+                    <h2>Account Name: {account.account_name}</h2>
                     <h2>Balance: ${account.balance}</h2>
                   </div>
                 ))}
@@ -73,7 +73,7 @@ const AdminDashboard = () => {
 
             {user.transactions && user.transactions.length > 0 && (
               <div>
-                <h4>User Transactions</h4>
+                <h3>User Transactions</h3>
                 {user.transactions.map((transaction) => (
                   <div key={transaction.id}>
                     <h2>Transaction NO: {transaction.id}</h2>

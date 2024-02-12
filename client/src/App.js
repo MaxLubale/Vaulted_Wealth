@@ -11,6 +11,7 @@ import UserAccountsPage from './components/UserAccountsPage';
 import CreateAccount from './components/CreateAccount';
 import TransactionsPage from './components/TransactionForm';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 
 
@@ -32,6 +33,7 @@ function App() {
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
+      <Footer/>
     </>
   );
 }

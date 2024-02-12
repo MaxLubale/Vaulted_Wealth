@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import TransactionForm from './TransactionForm';
 import EditAccountNameForm from './EditAccountNameForm';
+import'./UserAccountsPage.css'
 
 
 const UserAccountsPage = ({ userId }) => {
@@ -82,7 +83,7 @@ const UserAccountsPage = ({ userId }) => {
   };
 
   return (
-    <div>
+    <div className="container">
       <h1>User Accounts</h1>
       <Link to={`/user/${userId}/create-account`}>
         <button>Create a New Account</button>
@@ -96,7 +97,7 @@ const UserAccountsPage = ({ userId }) => {
           {accounts.map((account) => (
             <div key={account.id}>
               <h3>Account Name: {account.name}</h3>
-              <h3>Balance: {account.balance}</h3>
+              <h2>Balance: {account.balance}</h2>
               <h3>Created Date: {account.created_date}</h3>
               <button
                 onClick={() => handleDeleteAccount(account.id)}
@@ -130,9 +131,9 @@ const UserAccountsPage = ({ userId }) => {
                   <h3>Transactions List</h3>
                   {account.transactions.map((transaction) => (
                     <div key={transaction.id}>
-                      <p>Amount: {transaction.amount}</p>
-                      <p>Description: {transaction.description}</p>
-                      <p>Date: {transaction.transaction_date}</p>
+                      <h3>Amount: {transaction.amount}</h3>
+                      <h3>Description: {transaction.description}</h3>
+                      <h3>Date: {transaction.transaction_date}</h3>
                       <button
                         onClick={() => handleDeleteTransaction(account.id, transaction.id)}
                         disabled={loading}

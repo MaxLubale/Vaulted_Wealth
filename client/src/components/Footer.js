@@ -3,8 +3,8 @@ import './Footer.css';
 
 const Footer = () => {
   return (
-    <footer>
-      <p>&copy; 2024 Vaulted Wealth. All rights reserved.</p>
+    <footer className="footer">
+      <li>&copy; 2024 Vaulted Wealth. All rights reserved.</li>
     </footer>
   );
 };

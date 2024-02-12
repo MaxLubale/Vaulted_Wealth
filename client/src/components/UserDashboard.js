@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import UserAccountsPage from './UserAccountsPage';
+import'./UserDashboard.css'
 
 const UserDashboard = () => {
   const { userId } = useParams();
@@ -49,18 +50,18 @@ const UserDashboard = () => {
   };
 
   return (
-    <div>
+    <div className='.container '>
       <h1>Your Dashboard</h1>
       {loading && <p>Fetching user data...</p>}
       {error && <p>{error}</p>}
       {userData && (
-        <div>
+        <div className='user-info'>
           <h2>User Information</h2>
           
           <h2>First Name: {userData.first_name}</h2>
           <h2>Last Name: {userData.last_name}</h2>
           <h2>Username: {userData.username}</h2>
-          <h2>Email: {userData.email}</h2>
+          <h3>Email: {userData.email}</h3>
 
           {/* Route for the User Accounts Page */}
           <UserAccountsPage userId={userId} />

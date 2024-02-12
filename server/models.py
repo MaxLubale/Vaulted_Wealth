@@ -13,7 +13,7 @@ class User(db.Model):
     joined_at = db.Column(db.DateTime, default=datetime.utcnow)
 
      # Relationship with Account
-    accounts = db.relationship('Account', backref='user', lazy=True)
+    accounts = db.relationship('Account', backref='user', cascade='all, delete-orphan')
 
      
 
@@ -25,14 +25,19 @@ class Account(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     # Relationship with Transaction
-    transactions = db.relationship('Transaction', backref='account', lazy=True)
+    transactions = db.relationship('Transaction', backref='account', cascade='all, delete-orphan')
 
 class Transaction(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     account_id = db.Column(db.Integer, db.ForeignKey('account.id'), nullable=False)
     description = db.Column(db.String(255), nullable=False)
     amount = db.Column(db.Float, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    transaction_date = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def __init__(self, amount, description, account_id):
+        self.amount = amount
+        self.description = description
+        self.account_id = account_id
 
 class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -2,8 +2,9 @@ from flask import Flask, request, jsonify
 from models import db, User, Account, Transaction, Admin
 from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import current_user, login_required
-from werkzeug.exceptions import BadRequest, InternalServerError
+
+from werkzeug.exceptions import BadRequest
+from sqlalchemy.exc import IntegrityError
 
 
 
@@ -128,6 +129,46 @@ def register_user():
     except Exception as e:
         print(f"Error during registration: {str(e)}")
         return jsonify({'error': 'Internal Server Error', 'details': str(e)}), 500
+    
+
+ # route to delete user
+
+@app.route('/user/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    try:
+        user = User.query.get(user_id)
+
+        if user is None:
+            raise ValueError(f"User with ID {user_id} not found.")
+        
+
+        # Delete associated accounts
+        for account in user.accounts:
+            db.session.delete(account)
+
+        
+        
+        # Delete associated transactions
+        for transaction in account.transactions:
+            db.session.delete(transaction)
+
+
+        db.session.delete(user)
+        db.session.commit()
+
+        return jsonify({'message': f'User with ID {user_id} deleted successfully'}), 200
+
+    except IntegrityError as e:
+        db.session.rollback()  
+        return jsonify({'error': 'IntegrityError', 'details': str(e)}), 400
+
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+
+    except Exception as e:
+        db.session.rollback()  
+        return jsonify({'error': 'Internal Server Error', 'details': str(e)}), 500
+    
 
 # admin signup
 @app.route('/admin/signup', methods=['POST'])
@@ -200,7 +241,7 @@ def get_user_accounts(user_id):
             'id': account.id,
             'created_date': account.created_date.strftime('%Y-%m-%d %H:%M:%S'),
             'balance': account.balance,
-            'name': account.account_name,  # Update this line to use 'account_name'
+            'name': account.account_name,  
             'transactions': [
                 {
                     'id': transaction.id,
@@ -214,27 +255,9 @@ def get_user_accounts(user_id):
 
     return jsonify({'accounts': accounts_data}), 200
     
+# route to edit account name
 
-# create new account 
-@app.route('/user/<int:user_id>/accounts', methods=['POST'])
-def create_account(user_id):
-    user = User.query.get_or_404(user_id)
-
-    data = request.json
-    account_name = data.get('accountName', '')  
-
-    
-    if account_name not in ['personal', 'business', 'other']:
-        return jsonify({'error': 'Invalid account name'}), 400
-
-    new_account = Account(user=user, name=account_name)  
-    db.session.add(new_account)
-    db.session.commit()
-
-    return jsonify({'message': 'Account created successfully'}), 201
-
-
-@app.route('/user/<int:user_id>/accounts/<int:account_id>', methods=['PUT'])
+@app.route('/user/<int:user_id>/accounts/<int:account_id>', methods=['PATCH'])
 def edit_account_name(user_id, account_id):
     try:
         # Get the user and account
@@ -252,7 +275,181 @@ def edit_account_name(user_id, account_id):
     except Exception as e:
         print(f"Error during account name update: {str(e)}")
         return jsonify({'error': 'Internal Server Error', 'details': str(e)}), 500
+    
+# route to fetch user account transactions
+@app.route('/user/<int:user_id>/accounts/<int:account_id>/transactions', methods=['GET'])
+def get_account_transactions(user_id, account_id):
+    try:
+        # Check if the user and account exist
+        user = User.query.get_or_404(user_id)
+        account = Account.query.get_or_404(account_id)
 
+        # Ensure that the account belongs to the user
+        if account.user_id != user.id:
+            return jsonify({'error': 'Unauthorized access to account transactions'}), 403
+
+        transactions_data = []
+        for transaction in account.transactions:
+            transaction_data = {
+                'id': transaction.id,
+                'amount': transaction.amount,
+                'description': transaction.description,
+                'transaction_date': transaction.transaction_date.strftime('%Y-%m-%d %H:%M:%S')
+            }
+            transactions_data.append(transaction_data)
+
+        return jsonify({'transactions': transactions_data}), 200
+
+    except Exception as e:
+        print(f"Error fetching transactions: {str(e)}")
+        return jsonify({'error': 'Internal Server Error', 'details': str(e)}), 500
+
+@app.route('/<int:account_id>/transactions', methods=['POST'])
+def add_transaction(account_id):
+    try:
+        data = request.json
+
+        # Check if all required fields are present
+        required_fields = ['amount', 'description']
+        missing_fields = [field for field in required_fields if field not in data]
+
+        if missing_fields:
+            raise BadRequest(description=f'Missing required fields: {", ".join(missing_fields)}')
+
+        amount = data['amount']
+        description = data['description']
+
+        # Check if the account exists
+        account = Account.query.get_or_404(account_id)
+
+        # Create a new transaction
+        new_transaction = Transaction(amount=amount, description=description, account_id=account_id)
+
+        # Update the account balance based on the transaction amount
+        account.balance += amount
+
+        # Commit changes to the database
+        db.session.add(new_transaction)
+        db.session.commit()
+
+        return jsonify({'message': 'Transaction added successfully', 'account_balance': account.balance}), 201
+
+    except BadRequest as e:
+        return jsonify({'error': str(e)}), 400
+    except IntegrityError as e:
+        # Handle any integrity errors, such as duplicate key violations
+        db.session.rollback()
+        return jsonify({'error': 'Integrity Error', 'details': str(e)}), 400
+    except Exception as e:
+        print(f"Error adding transaction: {str(e)}")
+        return jsonify({'error': 'Internal Server Error', 'details': str(e)}), 500
+
+    # route to create new account
+@app.route('/user/<int:user_id>/accounts', methods=['POST'])
+def create_account(user_id):
+    try:
+        data = request.json
+
+       
+        account_name = data.get('accountName')
+
+        if not account_name:
+            raise ValueError("Account Name is required.")
+
+        # Create a new account instance
+        new_account = Account(
+            user_id=user_id,
+            account_name=account_name,
+           
+        )
+
+        
+        db.session.add(new_account)
+        db.session.commit()
+
+       
+        return jsonify({'message': 'Account created successfully', 'account': {
+            'id': new_account.id,
+            'user_id': new_account.user_id,
+            'account_name': new_account.account_name,
+            'created_date': new_account.created_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'balance': new_account.balance,
+           
+        }}), 201
+
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': 'Internal Server Error', 'details': str(e)}), 500
+    
+
+# route to delete account
+@app.route('/user/<int:user_id>/accounts/<int:account_id>', methods=['DELETE'])
+def delete_account(user_id, account_id):
+    try:
+        # Find the account in the database
+        account = Account.query.filter_by(id=account_id, user_id=user_id).first()
+
+        if account is None:
+            raise ValueError(f"Account with ID {account_id} not found for user {user_id}.")
+
+        # Delete associated transactions first
+        Transaction.query.filter_by(account_id=account.id).delete()
+
+        # Remove the account from the database
+        db.session.delete(account)
+        db.session.commit()
+
+        return jsonify({'message': f'Account with ID {account_id} deleted successfully'}), 200
+
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 400
+    except Exception as e:
+        return jsonify({'error': 'Internal Server Error', 'details': str(e)}), 500
+
+# route to get all users and accounts 
+@app.route('/admin/users-with-accounts', methods=['GET'])
+def get_users_with_accounts():
+    try:
+        # Assume you have an authentication mechanism to check if the requester is an admin
+
+        # Get all users
+        users = User.query.all()
+
+        # Create a list to store user data with accounts
+        users_with_accounts = []
+
+        # Loop through each user
+        for user in users:
+            user_data = {
+                'id': user.id,
+                'first_name':user.first_name,
+                'last_name':user.last_name,
+                'username': user.username,
+                'email': user.email,
+                'accounts': []  # List to store account data for this user
+            }
+
+            # Get all accounts for the current user
+            accounts = Account.query.filter_by(user_id=user.id).all()
+
+            # Loop through each account and add its data to the user_data
+            for account in accounts:
+                account_data = {
+                    'id': account.id,
+                    'account_name': account.account_name,
+                    'balance': account.balance
+                }
+
+                user_data['accounts'].append(account_data)
+
+            users_with_accounts.append(user_data)
+
+        return jsonify(users_with_accounts), 200
+
+    except Exception as e:
+        print(f"Error getting users with accounts: {str(e)}")
+        return jsonify({'error': 'Internal Server Error', 'details': str(e)}), 500
 
 if __name__ == '__main__':
     with app.app_context():
