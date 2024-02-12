@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './SignUpForm.css'; // Import the SignUpForm styles
+import './SignUpForm.css'; 
 
 const SignUpForm = () => {
   const navigate = useNavigate();

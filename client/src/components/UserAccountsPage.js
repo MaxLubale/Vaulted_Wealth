@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import TransactionForm from './TransactionForm';
 import EditAccountNameForm from './EditAccountNameForm';
-import DeleteAccount from './DeleteAccount'; 
-// import './UserAccountsPage.css';
+
 
 const UserAccountsPage = ({ userId }) => {
   const [accounts, setAccounts] = useState([]);
@@ -65,18 +64,21 @@ const UserAccountsPage = ({ userId }) => {
     }, 3000);
   };
 
-  // Function to handle the deletion of an account
-  const handleDeleteAccount = (deletedAccountId) => {
-    // Remove the deleted account from the state
-    setAccounts((prevAccounts) => prevAccounts.filter((account) => account.id !== deletedAccountId));
+  // Function to delete a transaction
+  const handleDeleteTransaction = (accountId, transactionId) => {
+    // Implement the logic to delete the transaction here
+    // Update the accounts state accordingly
+    console.log(`Deleting transaction ${transactionId} for account ${accountId}`);
+  };
 
-    // Set success message
-    setSuccessMessage(`Account with ID ${deletedAccountId} deleted successfully`);
+  // Function to delete an account
+  const handleDeleteAccount = (accountId) => {
+    // Implement the logic to delete the account here
+    // Update the accounts state accordingly
+    console.log(`Deleting account ${accountId}`);
 
-    // Clear success message after a few seconds
-    setTimeout(() => {
-      setSuccessMessage(null);
-    }, 3000);
+    // Set success message for account deletion
+    setSuccessMessage(`Account deleted successfully`);
   };
 
   return (
@@ -94,30 +96,35 @@ const UserAccountsPage = ({ userId }) => {
           {accounts.map((account) => (
             <div key={account.id}>
               <h3>Account Name: {account.name}</h3>
-              <p>Balance:$ {account.balance}</p>
-              <p>Created Date: {account.created_date}</p>
+              <h3>Balance: {account.balance}</h3>
+              <h3>Created Date: {account.created_date}</h3>
+              <button
+                onClick={() => handleDeleteAccount(account.id)}
+                disabled={loading}
+              >
+                Delete Account
+              </button>
               <EditAccountNameForm
                 user_id={userId}
                 account_id={account.id}
                 currentName={account.account_name}
                 onEdit={handleEditAccountName}
               />
-              <DeleteAccount
-                userId={userId}
-                accountId={account.id}
-                onDeleteSuccess={handleDeleteAccount}
-              />
+              {/* Render the EditAccountNameForm for each account */}
               <TransactionForm
                 userId={userId}
                 accountId={account.id}
                 onTransactionAdded={() => {
+                  // Set success message for transaction
                   setSuccessMessage(`Transaction added successfully for account ${account.id}`);
+
+                  // Clear success message after a few seconds
                   setTimeout(() => {
                     setSuccessMessage(null);
                   }, 3000);
                 }}
               />
-              
+              {/* Display all transactions for the account */}
               {account.transactions && account.transactions.length > 0 && (
                 <div>
                   <h3>Transactions List</h3>
@@ -126,6 +133,12 @@ const UserAccountsPage = ({ userId }) => {
                       <p>Amount: {transaction.amount}</p>
                       <p>Description: {transaction.description}</p>
                       <p>Date: {transaction.transaction_date}</p>
+                      <button
+                        onClick={() => handleDeleteTransaction(account.id, transaction.id)}
+                        disabled={loading}
+                      >
+                        Delete Transaction
+                      </button>
                     </div>
                   ))}
                 </div>

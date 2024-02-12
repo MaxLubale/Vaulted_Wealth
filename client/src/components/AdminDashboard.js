@@ -1,16 +1,17 @@
+// AdminDashboard.js
 import React, { useEffect, useState } from 'react';
-import {useNavigate} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import DeleteUser from './DeleteUser';
 
 const AdminDashboard = () => {
   const [usersData, setUsersData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
   const [error, setError] = useState(null);
 
+  // Define the fetchUsersData function outside useEffect
   const fetchUsersData = async () => {
     try {
-      const response = await fetch('/users');
+      const response = await fetch('/admin/users-with-accounts');
 
       if (response.ok) {
         const data = await response.json();
@@ -33,13 +34,9 @@ const AdminDashboard = () => {
   };
 
   useEffect(() => {
+    // Call fetchUsersData inside useEffect
     fetchUsersData();
   }, []);
-
-  const handleDeleteUser = (userId) => {
-    // Update the state to remove the deleted user
-    setUsersData((prevUsers) => prevUsers.filter((user) => user.id !== userId));
-  };
 
   if (loading) {
     return <p>Loading...</p>;
@@ -49,12 +46,6 @@ const AdminDashboard = () => {
     return <p style={{ color: 'red' }}>{error}</p>;
   }
 
-  const handleLogout = () => {
-    // Add logic to perform logout actions (clear tokens, etc.)
-    // For now, let's just redirect to the login page
-    navigate('/');
-  };
-
   return (
     <div>
       <h1>Admin Dashboard</h1>
@@ -62,19 +53,19 @@ const AdminDashboard = () => {
       {Array.isArray(usersData) && usersData.length > 0 ? (
         usersData.map((user) => (
           <div key={user.id}>
-            <h3>Username: {user.username}</h3>
-            <p>Name: {`${user.first_name || 'N/A'} ${user.last_name || 'N/A'}`}</p>
-            <p>Email: {user.email || 'N/A'}</p>
+            <h2>Username: {user.username}</h2>
+            <h2>Name: {`${user.first_name || 'N/A'} ${user.last_name || 'N/A'}`}</h2>
+            <h2>Email: {user.email || 'N/A'}</h2>
 
-            <DeleteUser userId={user.id} onDeleteSuccess={handleDeleteUser} />
+            <DeleteUser userId={user.id} onDeleteSuccess={fetchUsersData} />
 
             {user.accounts && user.accounts.length > 0 && (
               <div>
                 <h4>User Accounts</h4>
                 {user.accounts.map((account) => (
                   <div key={account.id}>
-                    <p>Account ID: {account.id}</p>
-                    <p>Balance: ${account.balance}</p>
+                    <h2>Account ID: {account.account_name}</h2>
+                    <h2>Balance: ${account.balance}</h2>
                   </div>
                 ))}
               </div>
@@ -85,8 +76,8 @@ const AdminDashboard = () => {
                 <h4>User Transactions</h4>
                 {user.transactions.map((transaction) => (
                   <div key={transaction.id}>
-                    <p>Transaction ID: {transaction.id}</p>
-                    <p>Amount: ${transaction.amount}</p>
+                    <h2>Transaction NO: {transaction.id}</h2>
+                    <h2>Amount: ${transaction.amount}</h2>
                   </div>
                 ))}
               </div>
@@ -97,7 +88,6 @@ const AdminDashboard = () => {
       ) : (
         <p>No users data available.</p>
       )}
-      
     </div>
   );
 };

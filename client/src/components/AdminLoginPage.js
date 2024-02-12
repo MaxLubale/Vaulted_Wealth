@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './LoginForm.css';
 
 const AdminLoginPage = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const AdminLoginPage = () => {
   };
 
   return (
-    <div>
+    <div className="login-form-container" >
       <h2>Admin Login</h2>
       <form onSubmit={handleSubmit}>
         {/* Add input fields for admin login */}

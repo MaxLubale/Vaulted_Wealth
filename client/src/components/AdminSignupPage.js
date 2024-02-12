@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './AdminSignUpForm.css'
+import './SignUpForm.css'; 
 
 const AdminSignupPage = () => {
   const navigate = useNavigate(); // Use useNavigate hook

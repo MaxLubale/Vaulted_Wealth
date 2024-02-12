@@ -7,9 +7,28 @@ const EditAccountNameForm = ({ user_id, account_id, currentName, onEdit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Perform the edit operation and update the state
-    // Call the onEdit function passed from the parent component
-    onEdit(account_id, newAccountName);
+    try {
+      const response = await fetch(`/user/${user_id}/accounts/${account_id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ new_account_name: newAccountName }),
+      });
+
+      if (response.ok) {
+        // If the request is successful, call the onEdit function
+        onEdit(account_id, newAccountName);
+        console.log('Account name updated successfully');
+      } else {
+        const errorData = await response.json();
+        console.error('Error updating account name:', errorData);
+        // Handle the error, show a message, etc.
+      }
+    } catch (error) {
+      console.error('Error during fetch:', error);
+      // Handle network errors, etc.
+    }
   };
 
   return (
