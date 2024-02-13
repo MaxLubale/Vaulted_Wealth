@@ -21,7 +21,10 @@ migrate = Migrate(app, db)
 def get_all_users():
     content_type = request.headers.get('Content-Type')
 
-    if content_type and not content_type.startswith('application/json'):
+    if not content_type:
+        return jsonify({'message': 'Missing Content-Type header'}), 400
+
+    if not content_type.startswith('application/json'):
         return jsonify({'message': 'Unsupported Media Type. Expected Content-Type: application/json'}), 415
 
     data = request.get_json()
@@ -200,7 +203,10 @@ def register_admin():
 def login_user():
     content_type = request.headers.get('Content-Type')
 
-    if content_type and not content_type.startswith('application/json'):
+    if not content_type:
+        return jsonify({'message': 'Missing Content-Type header'}), 400
+
+    if not content_type.startswith('application/json'):
         return jsonify({'message': 'Unsupported Media Type. Expected Content-Type: application/json'}), 415
 
     data = request.get_json()
