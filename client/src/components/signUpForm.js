@@ -39,7 +39,7 @@ const SignUpForm = () => {
       }
 
       setLoading(true);
-      const response = await fetch('/register', {
+      const response = await fetch('https://bank-backend-server.onrender.com/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

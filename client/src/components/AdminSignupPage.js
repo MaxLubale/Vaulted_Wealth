@@ -22,7 +22,7 @@ const AdminSignupPage = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('/admin/signup', {
+      const response = await fetch('https://bank-backend-server.onrender.com/admin/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -15,7 +15,7 @@ const UserDashboard = () => {
       try {
         setLoading(true);
 
-        const response = await fetch(`/user/${userId}`, {
+        const response = await fetch(`https://bank-backend-server.onrender.com/user/${userId}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

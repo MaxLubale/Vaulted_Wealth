@@ -17,7 +17,7 @@ const CreateAccount = () => {
 
     try {
       // Send a POST request to create a new account
-      const response = await fetch(`/user/${userId}/accounts`, {
+      const response = await fetch(`https://bank-backend-server.onrender.com/user/${userId}/accounts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -18,7 +18,7 @@ const UserAccountsPage = ({ userId }) => {
         setLoading(true);
 
         // Fetch user accounts data from the backend
-        const response = await fetch(`/user/${userId}/accounts`, {
+        const response = await fetch(`https://bank-backend-server.onrender.com/user/${userId}/accounts`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

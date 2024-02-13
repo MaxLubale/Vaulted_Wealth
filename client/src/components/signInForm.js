@@ -18,7 +18,7 @@ const SignUpForm = ({ userType }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${userType.toLowerCase()}/register`, {
+      const response = await fetch(`${userType.toLowerCase()}https://bank-backend-server.onrender.com/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

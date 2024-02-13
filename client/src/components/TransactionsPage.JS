@@ -12,7 +12,7 @@ const TransactionsPage = ({ userId, accountId }) => {
         setLoading(true);
 
         // Fetch transactions data from the backend for the specific user and account
-        const response = await fetch(`/user/${userId}/accounts/${accountId}/transactions`, {
+        const response = await fetch(`https://bank-backend-server.onrender.com/user/${userId}/accounts/${accountId}/transactions`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',

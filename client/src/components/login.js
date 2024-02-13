@@ -18,7 +18,7 @@ const LoginForm = () => {
 
   const handleLoginSuccess = async (userId) => {
     try {
-      const userResponse = await fetch(`/user/${userId}`, {
+      const userResponse = await fetch(`https://bank-backend-server.onrender.com/user/${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ const LoginForm = () => {
       setLoading(true);
       setErrorMessage('');
 
-      const response = await fetch('/login', {
+      const response = await fetch('https://bank-backend-server.onrender.com/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

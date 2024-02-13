@@ -11,7 +11,7 @@ const AdminDashboard = () => {
   // Define the fetchUsersData function outside useEffect
   const fetchUsersData = async () => {
     try {
-      const response = await fetch('/admin/users-with-accounts');
+      const response = await fetch('https://bank-backend-server.onrender.com/admin/users-with-accounts');
 
       if (response.ok) {
         const data = await response.json();

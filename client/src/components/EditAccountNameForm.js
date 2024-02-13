@@ -8,7 +8,7 @@ const EditAccountNameForm = ({ user_id, account_id, currentName, onEdit }) => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`/user/${user_id}/accounts/${account_id}`, {
+      const response = await fetch(`https://bank-backend-server.onrender.com/user/${user_id}/accounts/${account_id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

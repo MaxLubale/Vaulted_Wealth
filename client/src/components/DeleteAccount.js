@@ -17,7 +17,7 @@ const DeleteAccount = ({ accountId, onDeleteSuccess }) => {
       setLoading(true);
 
       // Send a DELETE request to the backend
-      const response = await fetch(`/accounts/${accountId}`, {
+      const response = await fetch(`https://bank-backend-server.onrender.com/accounts/${accountId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

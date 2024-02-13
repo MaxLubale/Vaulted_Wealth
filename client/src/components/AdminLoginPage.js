@@ -17,7 +17,7 @@ const AdminLoginPage = () => {
     e.preventDefault();
     
     try {
-      const response = await fetch('/admin/login', {
+      const response = await fetch('https://bank-backend-server.onrender.com/admin/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

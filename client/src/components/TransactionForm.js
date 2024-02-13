@@ -26,7 +26,7 @@ const TransactionForm = ({ accountId, onTransactionAdded }) => {
 
     try {
       // Send transaction data to the Flask backend
-      const response = await fetch(`/${accountId}/transactions`, {
+      const response = await fetch(`https://bank-backend-server.onrender.com/${accountId}/transactions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
