@@ -19,6 +19,11 @@ migrate = Migrate(app, db)
 # Route to get all users
 @app.route('/users', methods=['GET'])
 def get_all_users():
+    content_type = request.headers.get('Content-Type')
+
+    if content_type and not content_type.startswith('application/json'):
+        return jsonify({'message': 'Unsupported Media Type. Expected Content-Type: application/json'}), 415
+
     data = request.get_json()
 
     if data:
@@ -31,10 +36,10 @@ def get_all_users():
 # Route to get all admins
 @app.route('/admins', methods=['GET'])
 def get_all_admins():
-    data = request.get_json()
+    content_type = request.headers.get('Content-Type')
 
-    if data:
-        return jsonify({'message': 'Invalid request method for this endpoint'}), 400
+    if content_type and not content_type.startswith('application/json'):
+        return jsonify({'message': 'Unsupported Media Type. Expected Content-Type: application/json'}), 415
 
     admins = Admin.query.all()
     admin_list = [{'id': admin.id, 'username': admin.username, 'first_name': admin.first_name, 'last_name': admin.last_name, 'email': admin.email} for admin in admins]
@@ -193,6 +198,11 @@ def register_admin():
 # Route to login a user
 @app.route('/login', methods=['POST'])
 def login_user():
+    content_type = request.headers.get('Content-Type')
+
+    if content_type and not content_type.startswith('application/json'):
+        return jsonify({'message': 'Unsupported Media Type. Expected Content-Type: application/json'}), 415
+
     data = request.get_json()
 
     if not data or 'username' not in data or 'password' not in data:
