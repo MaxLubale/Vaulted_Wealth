@@ -12,7 +12,7 @@
    7. License
 ## Getting Started
 1. Clone the Repository:
-  - git clone <repository-url>
+  - git clone [https://github.com/MaxLubale/Vaulted_Wealth.git]
   - cd bank-application
 
 2. Install Dependencies:
@@ -68,4 +68,4 @@
     Contributions are welcome! Feel free to submit issues or pull requests.
 
 ## License
-This project is licensed under the MIT License.
+    This project is licensed under the MIT License.
