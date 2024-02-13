@@ -2,14 +2,15 @@ from flask import Flask, request, jsonify
 from models import db, User, Account, Transaction, Admin
 from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
-
 from werkzeug.exceptions import BadRequest
 from sqlalchemy.exc import IntegrityError
+from flask_cors import CORS
 
 
 
 
 app = Flask(__name__)
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bank.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)

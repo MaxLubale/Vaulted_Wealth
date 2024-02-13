@@ -11,6 +11,7 @@ werkzeug = "*"
 flask-login = "*"
 flask-session = "*"
 flask-bcrypt = "*"
+flask-cors = "*"
 
 [dev-packages]
 
