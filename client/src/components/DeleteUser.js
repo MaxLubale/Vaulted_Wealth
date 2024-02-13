@@ -5,6 +5,13 @@ const DeleteUser = ({ userId, onDeleteSuccess }) => {
   const [error, setError] = useState(null);
 
   const handleDelete = async () => {
+    // Display a confirmation dialog
+    const isConfirmed = window.confirm('Are you sure you want to delete this user?');
+
+    if (!isConfirmed) {
+      return; // If not confirmed, do nothing
+    }
+
     try {
       setLoading(true);
 
