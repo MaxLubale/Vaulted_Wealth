@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import TransactionForm from './TransactionForm';
 import EditAccountNameForm from './EditAccountNameForm';
+import DeleteAccount from './DeleteAccount';
 import'./UserAccountsPage.css'
 
 
@@ -99,12 +100,13 @@ const UserAccountsPage = ({ userId }) => {
               <h3>Account Name: {account.name}</h3>
               <h2>Balance: {account.balance}</h2>
               <h3>Created Date: {account.created_date}</h3>
-              <button
-                onClick={() => handleDeleteAccount(account.id)}
-                disabled={loading}
-              >
-                Delete Account
-              </button>
+              <DeleteAccount
+                accountId={account.id}
+                onDeleteSuccess={(deletedAccountId) => {
+                console.log('Account deleted successfully:', deletedAccountId);
+    
+                }}
+              />
               <EditAccountNameForm
                 user_id={userId}
                 account_id={account.id}

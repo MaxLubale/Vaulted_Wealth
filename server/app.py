@@ -230,7 +230,7 @@ def login_admin():
     else:
         return jsonify({'message': 'Invalid credentials'}), 401 
 
-
+# route to get user accounts
 @app.route('/user/<int:user_id>/accounts', methods=['GET'])
 def get_user_accounts(user_id):
     user = User.query.get_or_404(user_id)
@@ -304,6 +304,7 @@ def get_account_transactions(user_id, account_id):
         print(f"Error fetching transactions: {str(e)}")
         return jsonify({'error': 'Internal Server Error', 'details': str(e)}), 500
 
+# route to add transactions
 @app.route('/<int:account_id>/transactions', methods=['POST'])
 def add_transaction(account_id):
     try:
@@ -384,14 +385,14 @@ def create_account(user_id):
     
 
 # route to delete account
-@app.route('/user/<int:user_id>/accounts/<int:account_id>', methods=['DELETE'])
-def delete_account(user_id, account_id):
+@app.route('/accounts/<int:account_id>', methods=['DELETE'])
+def delete_account(account_id):
     try:
         # Find the account in the database
-        account = Account.query.filter_by(id=account_id, user_id=user_id).first()
+        account = Account.query.filter_by(id=account_id).first()
 
         if account is None:
-            raise ValueError(f"Account with ID {account_id} not found for user {user_id}.")
+            raise ValueError(f"Account with ID {account_id} not found for user.")
 
         # Delete associated transactions first
         Transaction.query.filter_by(account_id=account.id).delete()
