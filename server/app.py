@@ -19,35 +19,16 @@ migrate = Migrate(app, db)
 # Route to get all users
 @app.route('/users', methods=['GET'])
 def get_all_users():
-    content_type = request.headers.get('Content-Type')
-
-    if not content_type:
-        return jsonify({'message': 'Missing Content-Type header'}), 400
-
-    if not content_type.startswith('application/json'):
-        return jsonify({'message': 'Unsupported Media Type. Expected Content-Type: application/json'}), 415
-
-    data = request.get_json()
-
-    if data:
-        return jsonify({'message': 'Invalid request method for this endpoint'}), 400
-
     users = User.query.all()
-    user_list = [{'id': user.id, 'username': user.username, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email} for user in users]
+    user_list = [{'id': user.id, 'username': user.username, 'first_name': user.first_name ,'last_name': user.last_name ,'email':user.email} for user in users]
     return jsonify({'users': user_list})
 
 # Route to get all admins
 @app.route('/admins', methods=['GET'])
 def get_all_admins():
-    content_type = request.headers.get('Content-Type')
-
-    if content_type and not content_type.startswith('application/json'):
-        return jsonify({'message': 'Unsupported Media Type. Expected Content-Type: application/json'}), 415
-
     admins = Admin.query.all()
-    admin_list = [{'id': admin.id, 'username': admin.username, 'first_name': admin.first_name, 'last_name': admin.last_name, 'email': admin.email} for admin in admins]
+    admin_list = [{'id': admin.id, 'username': admin.username, 'first_name': admin.first_name ,'last_name': admin.last_name ,'email':admin.email} for admin in admins]
     return jsonify({'admins': admin_list})
-
 
 # Route to get user by ID
 @app.route('/user/<int:user_id>', methods=['GET'])
@@ -81,7 +62,22 @@ def get_admin_by_id(admin_id):
     else:
         return jsonify({'message': 'Admin not found'}), 404
 
+# Route to update user username
+@app.route('/update_username/<int:user_id>', methods=['PUT'])
+def update_username(user_id):
+    user = User.query.get(user_id)
 
+    if user:
+        new_username = request.json.get('new_username')
+
+        if new_username:
+            user.username = new_username
+            db.session.commit()
+            return jsonify({'message': 'Username updated successfully'}), 200
+        else:
+            return jsonify({'error': 'New username is missing or empty'}), 400
+    else:
+        return jsonify({'error': 'User not found'}), 404
 
 # Route to delete a user's transaction
 @app.route('/delete_transaction/<int:transaction_id>', methods=['DELETE'])
@@ -201,25 +197,14 @@ def register_admin():
 # Route to login a user
 @app.route('/login', methods=['POST'])
 def login_user():
-    content_type = request.headers.get('Content-Type')
-
-    if not content_type:
-        return jsonify({'message': 'Missing Content-Type header'}), 400
-
-    if not content_type.startswith('application/json'):
-        return jsonify({'message': 'Unsupported Media Type. Expected Content-Type: application/json'}), 415
-
-    data = request.get_json()
-
-    if not data or 'username' not in data or 'password' not in data:
-        return jsonify({'message': 'Invalid JSON data'}), 400
-
+    data = request.json
     username = data['username']
     password = data['password']
 
     user = User.query.filter_by(username=username).first()
 
     if user and check_password_hash(user.password, password):
+        
         user_data = {
             'id': user.id,
             'first_name': user.first_name,
