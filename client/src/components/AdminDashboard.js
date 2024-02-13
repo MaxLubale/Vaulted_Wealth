@@ -71,17 +71,7 @@ const AdminDashboard = () => {
               </div>
             )}
 
-            {user.transactions && user.transactions.length > 0 && (
-              <div>
-                <h3>User Transactions</h3>
-                {user.transactions.map((transaction) => (
-                  <div key={transaction.id}>
-                    <h2>Transaction NO: {transaction.id}</h2>
-                    <h2>Amount: ${transaction.amount}</h2>
-                  </div>
-                ))}
-              </div>
-            )}
+            
             <hr />
           </div>
         ))

@@ -63,6 +63,9 @@ const SignUpForm = () => {
   };
 
   return (
+    <>
+    <h1>Thank You For Choosing Us<i class="fa-solid fa-face-smile"></i></h1>
+    <p></p>
     <div className="form-container">
       <h2>Sign Up</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -93,6 +96,7 @@ const SignUpForm = () => {
         </button>
       </form>
     </div>
+    </>
   );
 };
 

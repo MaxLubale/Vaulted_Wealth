@@ -72,7 +72,7 @@ const HomePage = () => {
       {/* Container for displaying an image */}
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', margin: '20px' }}>
        <img
-      src="https://images.pexels.com/photos/730547/pexels-photo-730547.jpeg?auto=compress&cs=tinysrgb&w=800"  
+      src="https://images.pexels.com/photos/14891545/pexels-photo-14891545.jpeg?auto=compress&cs=tinysrgb&w=800"  
        style={{ maxWidth: '100%', height: 'auto', borderRadius: '10px' }}
       />
       </div>

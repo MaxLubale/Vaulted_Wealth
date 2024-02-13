@@ -12,6 +12,8 @@ import CreateAccount from './components/CreateAccount';
 import TransactionsPage from './components/TransactionForm';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import AboutUsPage from './components/AboutUsPage';
+import ServicesPage from './components/ServicesPage';
 
 
 
@@ -32,6 +34,8 @@ function App() {
         <Route path="/admin/signup" element={<AdminSignupPage />} />
         <Route path="/admin/login" element={<AdminLoginPage />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/about-us" element={<AboutUsPage />} />
+        <Route path="/services" element={<ServicesPage />} />
       </Routes>
       <Footer/>
     </>

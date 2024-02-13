@@ -1,5 +1,3 @@
-// Navbar.js
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
@@ -21,10 +19,10 @@ const Navbar = () => {
           <Link to="/"><i className="fas fa-home"></i>Home</Link>
         </li>
         <li>
-          <Link to="/user/:userId/accounts"><i className="fas fa-chart-bar"></i>Services</Link>
+          <Link to="/services"><i className="fas fa-chart-bar"></i>Services</Link>
         </li>
         <li>
-          <Link to="/dashboard/:userId"><i className="fas fa-building"></i>About Us</Link>
+          <Link to="/about-us"><i className="fas fa-building"></i>About Us</Link>
         </li>
         <li>
           <Link to="/"><i className="fas fa-sign-out-alt"></i> Logout</Link>

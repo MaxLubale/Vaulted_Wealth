@@ -9,6 +9,8 @@ flask-sqlalchemy = "*"
 sqlalchemy-serializer = "*"
 werkzeug = "*"
 flask-login = "*"
+flask-session = "*"
+flask-bcrypt = "*"
 
 [dev-packages]
 
