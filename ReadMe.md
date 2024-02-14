@@ -1,6 +1,6 @@
 # Bank Application README
 ## Overview
-   - Welcome to the Bank Application! This web application serves as a banking platform with two main roles: Admin and User. The Admin has access to all user information, account details, and has the ability to manage users. Users can perform actions such as signing up, logging in, viewing their dashboard, managing accounts, and conducting transactions.
+   - Welcome to the Bank Application! This web platform offers a banking experience for both administrators (Admin) and regular users. Admins have access to user information, account details, and user management, while users can sign up, log in, manage accounts, and perform transactions.
 
 ## Table of Contents
    1. Getting Started
